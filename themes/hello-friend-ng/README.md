@@ -156,17 +156,22 @@ and go to `localhost:1313` in your browser. From now on all the changes you make
 
 ## Available Social Icons:
 
-- codepen
-- email
-- facebook
+- [codechef](https://simpleicons.org/?q=codechef)
+- [codepen](https://simpleicons.org/?q=codepen)
+- [docker](https://simpleicons.org/?q=docker)
+- [email](https://feathericons.com/?query=mail)
+- [facebook](https://simpleicons.org/?q=facebook)
 - gitbook
-- github
-- gitlab
-- instagram
-- kaggle
-- keybase
-- linkedin
-- slack
+- [github](https://feathericons.com/?query=github)
+- [gitlab](https://feathericons.com/?query=gitlab)
+- [instagram](https://feathericons.com/?query=instagram)
+- [kaggle](https://simpleicons.org/?q=kaggle)
+- [keybase](https://simpleicons.org/?q=keybase)
+- [mastodon](https://simpleicons.org/?q=mastodon)
+- [linkedin](https://feathericons.com/?query=linked)
+- [podcasts-apple](https://simpleicons.org/?q=podcast)
+- [podcasts-google](https://simpleicons.org/?q=podcast)
+- [slack](https://simpleicons.org/?q=slack)
 - stackoverflow
 - telegram
 - twitch
