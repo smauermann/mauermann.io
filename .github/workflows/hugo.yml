@@ -39,7 +39,7 @@ jobs:
       - name: Deploy dev website
         if: github.event_name == 'pull_request'
         run: |
-          aws s3 sync public/ s3://dev.mauermann.io/ --delete
+          aws s3 sync public/ s3://${{ secrets.DEV_DOMAIN }}/ --delete
 
       - name: Configure AWS credentials for prod account
         if: github.ref == 'refs/heads/master'
@@ -51,4 +51,4 @@ jobs:
       - name: Deploy prod website
         if: github.ref == 'refs/heads/master'
         run: |
-          aws s3 sync public/ s3://mauermann.io/ --delete
+          aws s3 sync public/ s3://${{ secrets.PROD_DOMAIN }}/ --delete
