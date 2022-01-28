@@ -58,10 +58,6 @@ jobs:
           hugo-version: 0.92.0
           extended: true
 
-      - name: Patch base URL in prod config
-        run: |
-          sed -i "/baseURL:/s/mauermann.io/${{ secrets.PROD_DOMAIN }}/" config.yml
-
       - run: hugo --minify
 
       - name: Configure AWS credentials for prod account
