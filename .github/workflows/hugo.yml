@@ -60,7 +60,7 @@ jobs:
 
       - name: Patch base URL in prod config
         run: |
-          sed -i "/baseURL:/s/mauermann.io/${{ secrets.DEV_DOMAIN }}/" config.yml
+          sed -i "/baseURL:/s/mauermann.io/${{ secrets.PROD_DOMAIN }}/" config.yml
 
       - run: hugo --minify
 
