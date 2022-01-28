@@ -14,41 +14,62 @@ on:
   pull_request:
 
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true
+          fetch-depth: 0
 
       - uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 0.92.0
           extended: true
 
+      - name: Patch base URL in dev config
+        run: |
+          sed -i "/baseURL:/s/mauermann.io/${{ secrets.DEV_DOMAIN }}/" config.yml
+
       - run: hugo --minify
 
       - name: Configure AWS credentials for dev account
-        if: github.event_name == 'pull_request'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.DEV_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy dev website
-        if: github.event_name == 'pull_request'
         run: |
           aws s3 sync public/ s3://${{ secrets.DEV_DOMAIN }}/ --delete
 
+  deploy-prod:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 0.92.0
+          extended: true
+
+      - name: Patch base URL in prod config
+        run: |
+          sed -i "/baseURL:/s/mauermann.io/${{ secrets.DEV_DOMAIN }}/" config.yml
+
+      - run: hugo --minify
+
       - name: Configure AWS credentials for prod account
-        if: github.ref == 'refs/heads/master'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.PROD_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy prod website
-        if: github.ref == 'refs/heads/master'
         run: |
           aws s3 sync public/ s3://${{ secrets.PROD_DOMAIN }}/ --delete
