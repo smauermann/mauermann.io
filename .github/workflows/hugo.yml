@@ -1,0 +1,54 @@
+name: Hugo
+
+env:
+  AWS_REGION : eu-central-1
+
+permissions:
+  id-token: write   # Allow assume IAM Role via GitHub OIDC
+  contents: read    # This is required for actions/checkout@v2
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 0.92.0
+          extended: true
+
+      - run: hugo --minify
+
+      - name: Configure AWS credentials for dev account
+        if: github.event_name == 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.DEV_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy dev website
+        if: github.event_name == 'pull_request'
+        run: |
+          aws s3 sync public/ s3://dev.mauermann.io/ --delete
+
+      - name: Configure AWS credentials for prod account
+        if: github.ref == 'refs/heads/master'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.PROD_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy prod website
+        if: github.ref == 'refs/heads/master'
+        run: |
+          aws s3 sync public/ s3://mauermann.io/ --delete
