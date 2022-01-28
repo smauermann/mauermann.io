@@ -14,8 +14,7 @@ module "dev_website" {
 module "prod_website" {
   source = "./s3-website-cloudflare"
 
-  zone      = var.zone
-  subdomain = "prod"
+  zone = var.zone
 
   github_repo = var.github_repo
 
